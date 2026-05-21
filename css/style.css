@@ -46,7 +46,11 @@
 
 *{ box-sizing:border-box; }
 
-html{ scroll-behavior:smooth; }
+html{ scroll-behavior:auto; }
+html.lenis, html.lenis body{ height: auto; }
+.lenis.lenis-smooth{ scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent]{ overscroll-behavior: contain; }
+.lenis.lenis-stopped{ overflow: clip; }
 
 body{
   margin:0;
@@ -57,6 +61,31 @@ body{
   text-rendering: optimizeLegibility;
   line-height:1.7;
   overflow-x:hidden;
+  perspective: 1500px;
+}
+
+/* スクロール進捗バー */
+.scroll-progress{
+  position: fixed; top:0; left:0; right:0;
+  height: 3px; z-index: 100; pointer-events:none;
+  background: rgba(185,152,255,.08);
+}
+.scroll-progress span{
+  display:block; height:100%;
+  background: linear-gradient(90deg,#FFB6D9,#B998FF,#FFB6D9);
+  background-size: 200% 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  will-change: transform;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer{ to { background-position: 200% 0; } }
+
+/* 微細ノイズ */
+.noise{
+  position:absolute; inset:0; pointer-events:none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0 0.6 0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity:.06; mix-blend-mode: overlay;
 }
 
 img,svg{ display:block; max-width:100%; }
@@ -248,7 +277,9 @@ button{ font: inherit; cursor:pointer; }
 .hero-visual{
   position:relative;
   aspect-ratio: 1 / 1;
-  max-width: 520px; width:100%; justify-self:end;
+  max-width: 540px; width:100%; justify-self:end;
+  transform-style: preserve-3d;
+  perspective: 1200px;
 }
 .visual-card{
   position:absolute;
@@ -256,24 +287,40 @@ button{ font: inherit; cursor:pointer; }
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-lg);
   border:1px solid rgba(255,255,255,.9);
+  will-change: transform;
 }
 .card-main{
-  inset: 30px 30px 30px 30px;
-  background: linear-gradient(160deg, #FFF1F8 0%, #F4EEFF 100%);
+  inset: 20px 20px 20px 20px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,182,217,.5), transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(185,152,255,.5), transparent 65%),
+    linear-gradient(160deg, #FFF6FB 0%, #F1E8FF 100%);
   display:grid; place-items:center;
   overflow:hidden;
+  isolation:isolate;
 }
 .card-orbit{
-  position:absolute; inset:30px;
-  border:2px dashed rgba(185,152,255,.45);
+  position:absolute; inset:24px;
+  border:1.5px dashed rgba(185,152,255,.4);
   border-radius:50%;
-  animation: spin 24s linear infinite;
+  animation: spin 28s linear infinite;
+  pointer-events:none;
+  z-index: 1;
+}
+.card-orbit::before{
+  content:""; position:absolute; inset: 22px;
+  border:1px dashed rgba(255,122,182,.3);
+  border-radius:50%;
+  animation: spin 36s linear infinite reverse;
 }
 @keyframes spin{ to{ transform: rotate(360deg); } }
-.card-avatar{
-  width:62%; aspect-ratio: 200/240;
-  position:relative;
-  filter: drop-shadow(0 12px 24px rgba(185,152,255,.35));
+
+/* Three.js canvas */
+.hero-canvas{
+  position:absolute; inset:0;
+  width:100% !important; height:100% !important;
+  z-index: 2;
+  display:block;
 }
 .badge-live{
   position:absolute; top:18px; left:18px;
@@ -282,6 +329,7 @@ button{ font: inherit; cursor:pointer; }
   font-family:"Quicksand", sans-serif; font-weight:700; font-size:11px;
   color: var(--pink-500); letter-spacing:1.5px;
   box-shadow: var(--shadow-sm);
+  z-index: 3;
 }
 .live-dot{
   width:8px; height:8px; border-radius:50%;
@@ -352,6 +400,22 @@ button{ font: inherit; cursor:pointer; }
 @keyframes scroll{
   from{ transform: translateX(0); }
   to{ transform: translateX(-50%); }
+}
+
+/* カード共通: 3Dチルト用 */
+.feature-card, .liver-card, .support-card{
+  transform-style: preserve-3d;
+  transform: perspective(900px);
+  transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+}
+.feature-card .feature-icon,
+.liver-card .liver-avatar,
+.support-card .support-icon{
+  transform: translateZ(30px);
+  transform-style: preserve-3d;
+}
+.feature-card h3, .liver-card .liver-name, .support-card h3{
+  transform: translateZ(20px);
 }
 
 /* ===== 共通セクション ===== */
@@ -771,7 +835,7 @@ button{ font: inherit; cursor:pointer; }
 .to-top.is-visible{ opacity:1; pointer-events:auto; transform: translateY(0); }
 .to-top:hover{ box-shadow: var(--shadow-lg); }
 
-/* ===== Reveal Animations ===== */
+/* ===== Reveal Animations (GSAPがない時のフォールバック) ===== */
 .reveal{
   opacity: 0;
   transform: translateY(30px);
@@ -780,6 +844,7 @@ button{ font: inherit; cursor:pointer; }
 .reveal.is-visible{
   opacity:1; transform: translateY(0);
 }
+html.gsap-ready .reveal{ opacity:1; transform:none; transition:none; }
 
 /* ===== Responsive ===== */
 @media (max-width: 980px){
