@@ -6,7 +6,6 @@
   const hasGSAP = typeof window.gsap !== 'undefined';
   const hasST = hasGSAP && typeof window.ScrollTrigger !== 'undefined';
   const hasLenis = typeof window.Lenis !== 'undefined';
-  const hasTHREE = typeof window.THREE !== 'undefined';
 
   if (hasST) window.gsap.registerPlugin(window.ScrollTrigger);
 
@@ -304,172 +303,53 @@
     });
   }
 
-  /* ===== Three.js ヒーローシーン ===== */
-  function initHeroScene() {
-    if (!hasTHREE || reducedMotion) return;
-    const container = document.getElementById('heroVisual');
-    const canvas = document.getElementById('heroCanvas');
-    if (!container || !canvas) return;
+  /* ===== ヒーローキャラクター: 視線・頭追従 ===== */
+  function initHeroCharacter() {
+    if (reducedMotion) return;
+    const svg = document.getElementById('heroChar');
+    if (!svg) return;
 
-    const T = window.THREE;
-    const renderer = new T.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const pupilL = svg.querySelector('.pupil-left');
+    const pupilR = svg.querySelector('.pupil-right');
+    const head   = svg.querySelector('.char-head');
+    if (!pupilL || !pupilR) return;
 
-    const scene = new T.Scene();
-    const camera = new T.PerspectiveCamera(50, 1, 0.1, 100);
-    camera.position.set(0, 0, 6.5);
+    const state = { tx: 0, ty: 0, x: 0, y: 0 };
 
-    // ライト
-    scene.add(new T.AmbientLight(0xffffff, 0.55));
-    const lPink = new T.PointLight(0xff7ab6, 2.4, 20);
-    lPink.position.set(3, 3, 4);
-    scene.add(lPink);
-    const lPurple = new T.PointLight(0xb998ff, 2.2, 20);
-    lPurple.position.set(-3, -2, 3);
-    scene.add(lPurple);
-    const lWhite = new T.DirectionalLight(0xffffff, 0.5);
-    lWhite.position.set(0, 5, 5);
-    scene.add(lWhite);
+    const onMove = (e) => {
+      const r = svg.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = (e.clientX - cx) / (r.width / 2);
+      const dy = (e.clientY - cy) / (r.height / 2);
+      state.tx = Math.max(-1, Math.min(1, dx));
+      state.ty = Math.max(-1, Math.min(1, dy));
+    };
+    const onLeave = () => { state.tx = 0; state.ty = 0; };
 
-    // クリスタル群
-    const gemConfigs = [
-      { size: 1.15, color: 0xff9ecc, x: 0,    y: 0,    z: 0,   geo: 'ico' },
-      { size: 0.55, color: 0xb998ff, x: -1.7, y: 1.2,  z: -0.8, geo: 'oct' },
-      { size: 0.45, color: 0xffc9e2, x: 1.6,  y: 1.4,  z: 0.6,  geo: 'ico' },
-      { size: 0.65, color: 0xc4a6ff, x: -1.5, y: -1.5, z: 1,    geo: 'oct' },
-      { size: 0.4,  color: 0xff7ab6, x: 1.9,  y: -1.0, z: -0.6, geo: 'ico' },
-      { size: 0.32, color: 0xe8dcff, x: 0.5,  y: 2.0,  z: -0.5, geo: 'oct' },
-      { size: 0.3,  color: 0xffd1dc, x: -2.1, y: 0.3,  z: 0.8,  geo: 'ico' },
-    ];
-    const gems = [];
-    gemConfigs.forEach((cfg) => {
-      const geo = cfg.geo === 'ico'
-        ? new T.IcosahedronGeometry(cfg.size, 0)
-        : new T.OctahedronGeometry(cfg.size, 0);
-      const mat = new T.MeshStandardMaterial({
-        color: cfg.color,
-        emissive: cfg.color,
-        emissiveIntensity: 0.35,
-        flatShading: true,
-        roughness: 0.25,
-        metalness: 0.55,
-        transparent: true,
-        opacity: 0.92,
-      });
-      const mesh = new T.Mesh(geo, mat);
-      mesh.position.set(cfg.x, cfg.y, cfg.z);
-      mesh.userData = {
-        rotX: (Math.random() - 0.5) * 0.006 + 0.003,
-        rotY: (Math.random() - 0.5) * 0.006 + 0.003,
-        floatOffset: Math.random() * Math.PI * 2,
-        floatAmp: 0.12 + Math.random() * 0.12,
-        baseY: cfg.y,
-        baseX: cfg.x,
-      };
-      scene.add(mesh);
-      gems.push(mesh);
-    });
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerleave', onLeave);
+    document.addEventListener('mouseleave', onLeave);
 
-    // パーティクル
-    const particleCount = isMobile ? 70 : 220;
-    const pGeo = new T.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const vels = new Float32Array(particleCount);
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 14;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 14;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 5;
-      vels[i] = 0.001 + Math.random() * 0.003;
-    }
-    pGeo.setAttribute('position', new T.BufferAttribute(positions, 3));
-    const pMat = new T.PointsMaterial({
-      size: 0.05,
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.85,
-      sizeAttenuation: true,
-      depthWrite: false,
-      blending: T.AdditiveBlending,
-    });
-    const particles = new T.Points(pGeo, pMat);
-    scene.add(particles);
-
-    // マウスパララックス
-    const mouse = { tx: 0, ty: 0, x: 0, y: 0 };
-    container.addEventListener('pointermove', (e) => {
-      const r = container.getBoundingClientRect();
-      mouse.tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-      mouse.ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-    });
-    container.addEventListener('pointerleave', () => {
-      mouse.tx = 0;
-      mouse.ty = 0;
-    });
-
-    // リサイズ
-    let cw = 0, ch = 0;
-    function resize() {
-      const r = canvas.parentElement.getBoundingClientRect();
-      const w = Math.max(1, Math.round(r.width));
-      const h = Math.max(1, Math.round(r.height));
-      if (w === cw && h === ch) return;
-      cw = w; ch = h;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas.parentElement);
-
-    // 一時停止用フラグ
-    let visible = true;
-    document.addEventListener('visibilitychange', () => {
-      visible = document.visibilityState === 'visible';
-    });
-
-    // スクロールでカメラY
-    let scrollY = window.scrollY;
-    if (lenis) lenis.on('scroll', ({ scroll }) => (scrollY = scroll));
-    else window.addEventListener('scroll', () => (scrollY = window.scrollY), { passive: true });
-
-    const clock = new T.Clock();
-    function tick() {
-      requestAnimationFrame(tick);
-      if (!visible) return;
-      const t = clock.getElapsedTime();
-
-      mouse.x += (mouse.tx - mouse.x) * 0.06;
-      mouse.y += (mouse.ty - mouse.y) * 0.06;
-
-      gems.forEach((g) => {
-        g.rotation.x += g.userData.rotX;
-        g.rotation.y += g.userData.rotY;
-        g.position.y = g.userData.baseY + Math.sin(t + g.userData.floatOffset) * g.userData.floatAmp;
-        g.position.x = g.userData.baseX + Math.cos(t * 0.6 + g.userData.floatOffset) * 0.06;
-      });
-
-      // パーティクルがゆっくり上昇
-      const pos = pGeo.attributes.position.array;
-      for (let i = 0; i < particleCount; i++) {
-        pos[i * 3 + 1] += vels[i];
-        if (pos[i * 3 + 1] > 7) pos[i * 3 + 1] = -7;
+    function loop() {
+      requestAnimationFrame(loop);
+      state.x += (state.tx - state.x) * 0.12;
+      state.y += (state.ty - state.y) * 0.12;
+      const px = state.x * 4.5;
+      const py = state.y * 5;
+      pupilL.setAttribute('transform', `translate(${px} ${py})`);
+      pupilR.setAttribute('transform', `translate(${px} ${py})`);
+      if (head) {
+        // 頭をほんの少しだけ追従（CSSアニメと合成）
+        head.style.transform = `translate(${state.x * 4}px, ${state.y * 3}px)`;
       }
-      pGeo.attributes.position.needsUpdate = true;
-      particles.rotation.y = t * 0.04;
-
-      camera.position.x = mouse.x * 0.6;
-      camera.position.y = -mouse.y * 0.5 - scrollY * 0.0008;
-      camera.lookAt(0, 0, 0);
-
-      renderer.render(scene, camera);
     }
-    tick();
+    loop();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeroScene);
+    document.addEventListener('DOMContentLoaded', initHeroCharacter);
   } else {
-    initHeroScene();
+    initHeroCharacter();
   }
 })();

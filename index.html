@@ -107,7 +107,154 @@
       <div class="hero-visual" id="heroVisual" aria-hidden="true">
         <div class="visual-card card-main" data-depth="0">
           <div class="card-orbit"></div>
-          <canvas id="heroCanvas" class="hero-canvas"></canvas>
+
+          <!-- アニメーションキャラクター -->
+          <svg viewBox="0 0 400 480" class="char-svg" id="heroChar" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="hairGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFCDE5"/>
+                <stop offset="60%" stop-color="#E6B3FF"/>
+                <stop offset="100%" stop-color="#9D7DEB"/>
+              </linearGradient>
+              <linearGradient id="hairDark" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFB6D9"/>
+                <stop offset="100%" stop-color="#7A5FD8"/>
+              </linearGradient>
+              <linearGradient id="bowGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FF7AB6"/>
+                <stop offset="100%" stop-color="#FF9ECC"/>
+              </linearGradient>
+              <radialGradient id="eyeGrad" cx="40%" cy="40%">
+                <stop offset="0%" stop-color="#B998FF"/>
+                <stop offset="50%" stop-color="#7A5FD8"/>
+                <stop offset="100%" stop-color="#3A2A55"/>
+              </radialGradient>
+              <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFEFE3"/>
+                <stop offset="100%" stop-color="#FFD9C2"/>
+              </linearGradient>
+              <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                <feOffset dx="0" dy="3" result="off"/>
+                <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+                <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <g class="char-svg-inner">
+              <!-- 装飾の星・ハート -->
+              <g class="char-decor">
+                <text class="decor d1" x="60" y="80"  font-size="22" fill="#FF9ECC">✦</text>
+                <text class="decor d2" x="330" y="70" font-size="18" fill="#B998FF">✧</text>
+                <text class="decor d3" x="40" y="280" font-size="16" fill="#FFB6D9">♡</text>
+                <text class="decor d4" x="350" y="280" font-size="14" fill="#C4A6FF">✦</text>
+                <text class="decor d5" x="320" y="160" font-size="12" fill="#FF7AB6">♪</text>
+                <text class="decor d6" x="70" y="170" font-size="14" fill="#B998FF">♡</text>
+              </g>
+
+              <!-- 後ろ髪 -->
+              <g class="char-hair-back" filter="url(#softShadow)">
+                <path d="M70,210 Q55,110 200,80 Q345,110 330,210 L350,430 Q330,455 200,455 Q70,455 50,430 Z" fill="url(#hairGrad)"/>
+                <path d="M60,250 Q35,340 50,440 Q80,450 88,360 Q92,290 80,250 Z" fill="url(#hairDark)"/>
+                <path d="M340,250 Q365,340 350,440 Q320,450 312,360 Q308,290 320,250 Z" fill="url(#hairDark)"/>
+                <path d="M120,420 Q115,460 140,460 Q145,440 140,420 Z" fill="url(#hairDark)"/>
+                <path d="M280,420 Q285,460 260,460 Q255,440 260,420 Z" fill="url(#hairDark)"/>
+              </g>
+
+              <!-- 身体 -->
+              <g class="char-body">
+                <!-- 首 -->
+                <path d="M180,290 L180,320 Q200,330 220,320 L220,290 Z" fill="url(#skinGrad)"/>
+                <!-- 服 -->
+                <path d="M120,335 Q200,310 280,335 Q300,400 305,450 L95,450 Q100,400 120,335 Z" fill="#FFFFFF" stroke="#FFB6D9" stroke-width="2.5"/>
+                <!-- 胸元のリボン -->
+                <g class="char-chest-bow">
+                  <path d="M175,340 L195,335 L195,360 L175,355 Z" fill="url(#bowGrad)"/>
+                  <path d="M225,340 L205,335 L205,360 L225,355 Z" fill="url(#bowGrad)"/>
+                  <circle cx="200" cy="347" r="6" fill="#fff" stroke="#FF9ECC" stroke-width="1.5"/>
+                </g>
+                <!-- 左手 -->
+                <g class="char-arm-left">
+                  <path d="M115,360 Q95,400 110,440 Q125,445 135,415 Q138,385 130,355 Z" fill="url(#skinGrad)" stroke="#FFB6D9" stroke-width="1.5"/>
+                </g>
+                <!-- 右手（手を振る） -->
+                <g class="char-hand-wave">
+                  <path d="M280,335 Q310,295 305,250 Q295,230 280,245 Q265,275 270,330 Z" fill="url(#skinGrad)" stroke="#FFB6D9" stroke-width="1.5"/>
+                  <!-- 指 -->
+                  <circle cx="297" cy="245" r="4" fill="url(#skinGrad)"/>
+                </g>
+              </g>
+
+              <!-- 頭 -->
+              <g class="char-head">
+                <!-- 顔 -->
+                <ellipse cx="200" cy="210" rx="88" ry="105" fill="url(#skinGrad)"/>
+
+                <!-- 後ろの毛束（顔の横） -->
+                <path d="M115,190 Q100,260 118,290 Q132,275 130,230 Z" fill="url(#hairDark)" opacity="0.95"/>
+                <path d="M285,190 Q300,260 282,290 Q268,275 270,230 Z" fill="url(#hairDark)" opacity="0.95"/>
+
+                <!-- 頬 -->
+                <ellipse class="cheek cheek-left"  cx="142" cy="235" rx="18" ry="9" fill="#FFB6D9" opacity="0.65"/>
+                <ellipse class="cheek cheek-right" cx="258" cy="235" rx="18" ry="9" fill="#FFB6D9" opacity="0.65"/>
+
+                <!-- 目 -->
+                <g class="char-eyes">
+                  <g class="eye eye-left">
+                    <!-- 白目 -->
+                    <ellipse class="eye-bg" cx="158" cy="210" rx="18" ry="24" fill="#FFFFFF"/>
+                    <!-- 黒目 -->
+                    <g class="pupil pupil-left">
+                      <ellipse cx="158" cy="215" rx="14" ry="20" fill="url(#eyeGrad)"/>
+                      <ellipse cx="155" cy="210" rx="5" ry="7" fill="#fff" opacity="0.95"/>
+                      <circle cx="162" cy="222" r="2.5" fill="#fff" opacity="0.8"/>
+                      <circle cx="160" cy="218" r="1.5" fill="#FFCDE5"/>
+                    </g>
+                    <!-- まつげ -->
+                    <path d="M140,193 Q158,184 176,193" stroke="#3A2A55" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  </g>
+                  <g class="eye eye-right">
+                    <ellipse class="eye-bg" cx="242" cy="210" rx="18" ry="24" fill="#FFFFFF"/>
+                    <g class="pupil pupil-right">
+                      <ellipse cx="242" cy="215" rx="14" ry="20" fill="url(#eyeGrad)"/>
+                      <ellipse cx="239" cy="210" rx="5" ry="7" fill="#fff" opacity="0.95"/>
+                      <circle cx="246" cy="222" r="2.5" fill="#fff" opacity="0.8"/>
+                      <circle cx="244" cy="218" r="1.5" fill="#FFCDE5"/>
+                    </g>
+                    <path d="M224,193 Q242,184 260,193" stroke="#3A2A55" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  </g>
+                </g>
+
+                <!-- 鼻 -->
+                <circle cx="200" cy="245" r="1.5" fill="#D97E9E" opacity="0.5"/>
+
+                <!-- 口 -->
+                <path class="char-mouth" d="M188,268 Q200,278 212,268" stroke="#D97E9E" stroke-width="2.8" fill="#FFB6D9" stroke-linecap="round"/>
+
+                <!-- 前髪 -->
+                <g class="char-hair-front">
+                  <!-- メインの前髪 -->
+                  <path d="M112,165 Q130,80 200,75 Q270,80 288,165 Q275,185 250,170 Q240,140 225,145 Q215,118 200,118 Q185,118 175,145 Q160,140 150,170 Q125,185 112,165 Z" fill="url(#hairGrad)"/>
+                  <!-- 髪のハイライト -->
+                  <path d="M165,105 Q180,95 200,93 Q220,95 235,105 Q230,115 200,115 Q170,115 165,105 Z" fill="#FFE0EE" opacity="0.6"/>
+                  <!-- サイドの一房 -->
+                  <path d="M110,170 Q90,220 105,260 Q120,250 125,210 Q120,180 110,170 Z" fill="url(#hairGrad)"/>
+                  <path d="M290,170 Q310,220 295,260 Q280,250 275,210 Q280,180 290,170 Z" fill="url(#hairGrad)"/>
+                </g>
+
+                <!-- 大きいリボン -->
+                <g class="char-ribbon">
+                  <ellipse cx="148" cy="125" rx="26" ry="16" fill="url(#bowGrad)" transform="rotate(-20 148 125)"/>
+                  <ellipse cx="188" cy="125" rx="26" ry="16" fill="url(#bowGrad)" transform="rotate(20 188 125)"/>
+                  <circle cx="168" cy="125" r="8" fill="#fff" stroke="#FF7AB6" stroke-width="2"/>
+                  <circle cx="168" cy="125" r="3" fill="#FF7AB6"/>
+                  <!-- リボンのキラキラ -->
+                  <text x="135" y="120" font-size="10" fill="#fff">✦</text>
+                </g>
+              </g>
+            </g>
+          </svg>
+
           <span class="badge badge-live"><span class="live-dot"></span>LIVE NOW</span>
         </div>
 
@@ -127,10 +274,13 @@
           </div>
         </div>
 
+        <!-- 浮遊する装飾 -->
         <span class="sparkle s1" data-depth="0.9">✦</span>
         <span class="sparkle s2" data-depth="0.6">✧</span>
         <span class="sparkle s3" data-depth="0.8">✦</span>
         <span class="sparkle s4" data-depth="1.0">♡</span>
+        <span class="sparkle s5" data-depth="0.7">♪</span>
+        <span class="sparkle s6" data-depth="0.5">✿</span>
       </div>
     </div>
 
@@ -189,7 +339,31 @@
       <div class="livers-grid">
         <!-- 1 -->
         <article class="liver-card" style="--c1:#FFC9E2;--c2:#FF9ECC;">
-          <div class="liver-avatar"><span class="initial">M</span></div>
+          <div class="liver-avatar">
+            <svg viewBox="0 0 120 120" class="mini-char" aria-hidden="true">
+              <path class="mc-hair-back" d="M22,70 Q18,28 60,22 Q102,28 98,70 L100,115 L20,115 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M22,60 Q15,85 22,110 Q30,108 32,80 Q30,65 22,60 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M98,60 Q105,85 98,110 Q90,108 88,80 Q90,65 98,60 Z" fill="var(--c2)"/>
+              <ellipse cx="60" cy="62" rx="26" ry="30" fill="#FFEFE3"/>
+              <ellipse cx="42" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <ellipse cx="78" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <g class="mc-eyes">
+                <ellipse cx="50" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="49" cy="60" r="1.3" fill="#fff"/>
+                <ellipse cx="70" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="69" cy="60" r="1.3" fill="#fff"/>
+              </g>
+              <path d="M55,75 Q60,79 65,75" stroke="#D97E9E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <g class="mc-hair-front">
+                <path d="M30,42 Q42,18 60,16 Q78,18 90,42 Q82,52 72,46 Q66,32 60,32 Q54,32 48,46 Q38,52 30,42 Z" fill="var(--c1)"/>
+                <path d="M50,28 Q60,22 70,28 Q66,32 60,32 Q54,32 50,28 Z" fill="#fff" opacity="0.4"/>
+              </g>
+              <g class="mc-ribbon">
+                <circle cx="38" cy="30" r="6" fill="var(--c2)"/>
+                <circle cx="38" cy="30" r="2.5" fill="#fff"/>
+              </g>
+            </svg>
+          </div>
           <span class="liver-tag">LEADER</span>
           <h3 class="liver-name">星乃 ましろ</h3>
           <p class="liver-en">Hoshino Mashiro</p>
@@ -202,7 +376,30 @@
         </article>
         <!-- 2 -->
         <article class="liver-card" style="--c1:#D6C7FF;--c2:#B998FF;">
-          <div class="liver-avatar"><span class="initial">R</span></div>
+          <div class="liver-avatar">
+            <svg viewBox="0 0 120 120" class="mini-char" aria-hidden="true">
+              <path class="mc-hair-back" d="M22,70 Q18,28 60,22 Q102,28 98,70 L100,115 L20,115 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M22,60 Q15,85 22,110 Q30,108 32,80 Q30,65 22,60 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M98,60 Q105,85 98,110 Q90,108 88,80 Q90,65 98,60 Z" fill="var(--c2)"/>
+              <ellipse cx="60" cy="62" rx="26" ry="30" fill="#FFEFE3"/>
+              <ellipse cx="42" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <ellipse cx="78" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <g class="mc-eyes">
+                <ellipse cx="50" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="49" cy="60" r="1.3" fill="#fff"/>
+                <ellipse cx="70" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="69" cy="60" r="1.3" fill="#fff"/>
+              </g>
+              <path d="M55,75 Q60,79 65,75" stroke="#D97E9E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <g class="mc-hair-front">
+                <path d="M30,42 Q42,18 60,16 Q78,18 90,42 Q82,52 72,46 Q66,32 60,32 Q54,32 48,46 Q38,52 30,42 Z" fill="var(--c1)"/>
+                <path d="M50,28 Q60,22 70,28 Q66,32 60,32 Q54,32 50,28 Z" fill="#fff" opacity="0.4"/>
+              </g>
+              <g class="mc-ribbon">
+                <text x="32" y="36" font-size="14" fill="var(--c2)" font-weight="700">♪</text>
+              </g>
+            </svg>
+          </div>
           <span class="liver-tag">SINGER</span>
           <h3 class="liver-name">瑠璃乃 ゆめ</h3>
           <p class="liver-en">Rurino Yume</p>
@@ -215,7 +412,32 @@
         </article>
         <!-- 3 -->
         <article class="liver-card" style="--c1:#C7F0E6;--c2:#A0E5D2;">
-          <div class="liver-avatar"><span class="initial">N</span></div>
+          <div class="liver-avatar">
+            <svg viewBox="0 0 120 120" class="mini-char" aria-hidden="true">
+              <path class="mc-hair-back" d="M22,70 Q18,28 60,22 Q102,28 98,70 L100,115 L20,115 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M22,60 Q15,85 22,110 Q30,108 32,80 Q30,65 22,60 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M98,60 Q105,85 98,110 Q90,108 88,80 Q90,65 98,60 Z" fill="var(--c2)"/>
+              <ellipse cx="60" cy="62" rx="26" ry="30" fill="#FFEFE3"/>
+              <ellipse cx="42" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <ellipse cx="78" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <g class="mc-eyes">
+                <ellipse cx="50" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="49" cy="60" r="1.3" fill="#fff"/>
+                <ellipse cx="70" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="69" cy="60" r="1.3" fill="#fff"/>
+              </g>
+              <path d="M55,75 Q60,79 65,75" stroke="#D97E9E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <g class="mc-hair-front">
+                <path d="M30,42 Q42,18 60,16 Q78,18 90,42 Q82,52 72,46 Q66,32 60,32 Q54,32 48,46 Q38,52 30,42 Z" fill="var(--c1)"/>
+                <path d="M50,28 Q60,22 70,28 Q66,32 60,32 Q54,32 50,28 Z" fill="#fff" opacity="0.4"/>
+              </g>
+              <g class="mc-headset">
+                <path d="M28,38 Q60,12 92,38" stroke="#7A5FD8" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <ellipse cx="26" cy="44" rx="5" ry="6" fill="#7A5FD8"/>
+                <ellipse cx="94" cy="44" rx="5" ry="6" fill="#7A5FD8"/>
+              </g>
+            </svg>
+          </div>
           <span class="liver-tag">GAMER</span>
           <h3 class="liver-name">七星 にこ</h3>
           <p class="liver-en">Nanase Niko</p>
@@ -228,7 +450,30 @@
         </article>
         <!-- 4 -->
         <article class="liver-card" style="--c1:#FFE3B3;--c2:#FFB97A;">
-          <div class="liver-avatar"><span class="initial">S</span></div>
+          <div class="liver-avatar">
+            <svg viewBox="0 0 120 120" class="mini-char" aria-hidden="true">
+              <path class="mc-hair-back" d="M22,70 Q18,28 60,22 Q102,28 98,70 L100,115 L20,115 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M22,60 Q15,85 22,110 Q30,108 32,80 Q30,65 22,60 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M98,60 Q105,85 98,110 Q90,108 88,80 Q90,65 98,60 Z" fill="var(--c2)"/>
+              <ellipse cx="60" cy="62" rx="26" ry="30" fill="#FFEFE3"/>
+              <ellipse cx="42" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <ellipse cx="78" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <g class="mc-eyes">
+                <ellipse cx="50" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="49" cy="60" r="1.3" fill="#fff"/>
+                <ellipse cx="70" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="69" cy="60" r="1.3" fill="#fff"/>
+              </g>
+              <path d="M55,75 Q60,79 65,75" stroke="#D97E9E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <g class="mc-hair-front">
+                <path d="M30,42 Q42,18 60,16 Q78,18 90,42 Q82,52 72,46 Q66,32 60,32 Q54,32 48,46 Q38,52 30,42 Z" fill="var(--c1)"/>
+                <path d="M50,28 Q60,22 70,28 Q66,32 60,32 Q54,32 50,28 Z" fill="#fff" opacity="0.4"/>
+              </g>
+              <g class="mc-ribbon">
+                <text x="28" y="38" font-size="14" fill="#FF9ECC" font-weight="700">✿</text>
+              </g>
+            </svg>
+          </div>
           <span class="liver-tag">CHATTER</span>
           <h3 class="liver-name">咲花 すずな</h3>
           <p class="liver-en">Sakihana Suzuna</p>
@@ -241,7 +486,31 @@
         </article>
         <!-- 5 -->
         <article class="liver-card" style="--c1:#FFD1DC;--c2:#FF85A2;">
-          <div class="liver-avatar"><span class="initial">L</span></div>
+          <div class="liver-avatar">
+            <svg viewBox="0 0 120 120" class="mini-char" aria-hidden="true">
+              <path class="mc-hair-back" d="M22,70 Q18,28 60,22 Q102,28 98,70 L100,115 L20,115 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M22,60 Q15,85 22,110 Q30,108 32,80 Q30,65 22,60 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M98,60 Q105,85 98,110 Q90,108 88,80 Q90,65 98,60 Z" fill="var(--c2)"/>
+              <ellipse cx="60" cy="62" rx="26" ry="30" fill="#FFEFE3"/>
+              <ellipse cx="42" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <ellipse cx="78" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <g class="mc-eyes">
+                <ellipse cx="50" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="49" cy="60" r="1.3" fill="#fff"/>
+                <ellipse cx="70" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="69" cy="60" r="1.3" fill="#fff"/>
+              </g>
+              <path d="M55,75 Q60,79 65,75" stroke="#D97E9E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <g class="mc-hair-front">
+                <path d="M30,42 Q42,18 60,16 Q78,18 90,42 Q82,52 72,46 Q66,32 60,32 Q54,32 48,46 Q38,52 30,42 Z" fill="var(--c1)"/>
+                <path d="M50,28 Q60,22 70,28 Q66,32 60,32 Q54,32 50,28 Z" fill="#fff" opacity="0.4"/>
+              </g>
+              <g class="mc-ribbon">
+                <text x="30" y="36" font-size="13" fill="#fff" font-weight="700">✦</text>
+                <text x="78" y="40" font-size="11" fill="#fff" font-weight="700">✧</text>
+              </g>
+            </svg>
+          </div>
           <span class="liver-tag">IDOL</span>
           <h3 class="liver-name">月白 ルナ</h3>
           <p class="liver-en">Tsukishiro Luna</p>
@@ -254,7 +523,30 @@
         </article>
         <!-- 6 -->
         <article class="liver-card" style="--c1:#E0D4FF;--c2:#9D7DEB;">
-          <div class="liver-avatar"><span class="initial">A</span></div>
+          <div class="liver-avatar">
+            <svg viewBox="0 0 120 120" class="mini-char" aria-hidden="true">
+              <path class="mc-hair-back" d="M22,70 Q18,28 60,22 Q102,28 98,70 L100,115 L20,115 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M22,60 Q15,85 22,110 Q30,108 32,80 Q30,65 22,60 Z" fill="var(--c2)"/>
+              <path class="mc-hair-back" d="M98,60 Q105,85 98,110 Q90,108 88,80 Q90,65 98,60 Z" fill="var(--c2)"/>
+              <ellipse cx="60" cy="62" rx="26" ry="30" fill="#FFEFE3"/>
+              <ellipse cx="42" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <ellipse cx="78" cy="70" rx="5" ry="3" fill="#FFB6D9" opacity="0.6"/>
+              <g class="mc-eyes">
+                <ellipse cx="50" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="49" cy="60" r="1.3" fill="#fff"/>
+                <ellipse cx="70" cy="62" rx="4" ry="6" fill="#3A2A55"/>
+                <circle cx="69" cy="60" r="1.3" fill="#fff"/>
+              </g>
+              <path d="M55,75 Q60,79 65,75" stroke="#D97E9E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <g class="mc-hair-front">
+                <path d="M30,42 Q42,18 60,16 Q78,18 90,42 Q82,52 72,46 Q66,32 60,32 Q54,32 48,46 Q38,52 30,42 Z" fill="var(--c1)"/>
+                <path d="M50,28 Q60,22 70,28 Q66,32 60,32 Q54,32 50,28 Z" fill="#fff" opacity="0.4"/>
+              </g>
+              <g class="mc-ribbon">
+                <text x="32" y="38" font-size="14" fill="#FF9ECC" font-weight="700">♡</text>
+              </g>
+            </svg>
+          </div>
           <span class="liver-tag">ARTIST</span>
           <h3 class="liver-name">綾瀬 あおい</h3>
           <p class="liver-en">Ayase Aoi</p>
@@ -479,7 +771,6 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
 <script src="js/main.js" defer></script>
 </body>
