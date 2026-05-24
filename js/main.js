@@ -40,12 +40,12 @@
     e.preventDefault();
     if (!form.checkValidity()) {
       formNote.textContent = '入力内容をご確認ください。';
-      formNote.style.color = '#F06AA8';
+      formNote.style.color = '#E66822';
       form.reportValidity();
       return;
     }
     formNote.textContent = '送信できました ✦ 返信まで少々お待ちください。';
-    formNote.style.color = '#7A5FD8';
+    formNote.style.color = '#C2701F';
     form.reset();
   });
 
