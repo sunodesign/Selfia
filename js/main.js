@@ -102,6 +102,28 @@
   else window.addEventListener('scroll', () => updateProgress(window.scrollY), { passive: true });
   updateProgress(window.scrollY);
 
+  /* ===== スクロールスパイ（ナビの現在地ハイライト） ===== */
+  const navLinks = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+  const spySections = navLinks
+    .map((a) => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+  if (navLinks.length && spySections.length && 'IntersectionObserver' in window) {
+    const setActive = (id) => {
+      navLinks.forEach((a) =>
+        a.classList.toggle('is-active', a.getAttribute('href') === `#${id}`)
+      );
+    };
+    const spy = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
+    );
+    spySections.forEach((sec) => spy.observe(sec));
+  }
+
   /* ===== GSAP スクロール演出 ===== */
   if (hasST && !reducedMotion) {
     document.documentElement.classList.add('gsap-ready');
