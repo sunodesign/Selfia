@@ -352,4 +352,209 @@
   } else {
     initHeroCharacter();
   }
+
+  /* ===== Vライバー適性診断 ===== */
+  function initAssess() {
+    const card = document.getElementById('assessCard');
+    if (!card) return;
+
+    const panels = card.querySelectorAll('.assess-panel');
+    const showPanel = (name) => {
+      panels.forEach((p) => p.classList.toggle('is-active', p.dataset.panel === name));
+    };
+
+    const questions = [
+      {
+        q: 'まずは気軽に。配信ってどんなイメージ？',
+        opts: [
+          { e: '🎭', t: '自分じゃないキャラになって話せるって楽しそう', tags: ['V','character'] },
+          { e: '🎙️', t: '声だけで自分を表現できるのって新鮮', tags: ['voice','healer'] },
+          { e: '🎨', t: '推したくなる世界観を一緒に作れたら嬉しい', tags: ['creator','world'] },
+          { e: '✨', t: 'まだ想像つかない！でも興味はある', tags: ['newbie','curious'] },
+        ],
+      },
+      {
+        q: 'いちばん夢中になれそうなことは?',
+        opts: [
+          { e: '🎤', t: '歌ったりダンスしたり、感情を届けたい', tags: ['idol'] },
+          { e: '🎮', t: 'ゲームで盛り上がるのが好き', tags: ['entertain'] },
+          { e: '🖌️', t: '絵・写真・モノづくり', tags: ['creator'] },
+          { e: '💬', t: '雑談やお悩み相談、聞き役', tags: ['healer'] },
+          { e: '🌈', t: 'まだ迷い中。いろいろやってみたい', tags: ['curious'] },
+        ],
+      },
+      {
+        q: '週にどれくらい配信できそう？',
+        opts: [
+          { e: '🌱', t: '週1〜2回・スキマ時間でゆるっと', tags: ['light'] },
+          { e: '🌷', t: '週3〜4回・生活のリズムに組み込みたい', tags: ['steady'] },
+          { e: '🌟', t: 'ほぼ毎日！本気でやってみたい', tags: ['pro'] },
+          { e: '🤔', t: 'まだイメージつかない', tags: ['curious'] },
+        ],
+      },
+      {
+        q: '配信で叶えたい理想の未来は?',
+        opts: [
+          { e: '💖', t: '見てくれた人を笑顔にしたい', tags: ['idol'] },
+          { e: '🤝', t: '同じ夢を持つ仲間と一緒に成長したい', tags: ['team'] },
+          { e: '🏠', t: '自分の居場所や物語をつくりたい', tags: ['world','creator'] },
+          { e: '💫', t: '「好き」でごはん食べられるようになりたい', tags: ['pro'] },
+        ],
+      },
+      {
+        q: '事務所選びで大切にしたいことは?',
+        opts: [
+          { e: '🛠️', t: 'イラスト・機材・技術面をまるっと任せたい', tags: ['creator','support'] },
+          { e: '👥', t: 'マネージャーが親身に伴走してほしい', tags: ['support','healer'] },
+          { e: '🚀', t: '案件やイベントのチャンスがほしい', tags: ['pro','entertain'] },
+          { e: '🌿', t: '無理せずマイペースにやれる環境', tags: ['light','healer'] },
+        ],
+      },
+    ];
+
+    const types = {
+      idol: {
+        title: 'アイドル型 ✦',
+        body: '人を笑顔にする力があるあなたは、まさに応援したくなる存在。歌・ダンス・トーク——ステージ上のキラめきを最大限に引き出せるタイプです。SELFiAの衣装デザイン＋Live2Dで、あなたの"推されポイント"をプロデュースします。',
+        tags: ['#歌', '#ライブ', '#笑顔', '#元気'],
+      },
+      entertain: {
+        title: 'エンタメ型 ✧',
+        body: '一緒にいて楽しい空気を作れるあなたは、リスナーが自然と集まってくる才能あり。ゲーム・雑談・コラボ配信で活躍できるタイプ。SELFiAはコラボ案件を多数持っているので、デビュー後すぐに仲間と絡めます。',
+        tags: ['#ゲーム', '#雑談', '#盛り上げ', '#コラボ'],
+      },
+      creator: {
+        title: 'クリエイター型 ★',
+        body: '"世界観を作る"ことに情熱を注げるあなた。イラスト・ボイスドラマ・MV制作など、配信を超えた表現ができるタイプ。専属クリエイターと二人三脚で、あなただけの物語を形にできます。',
+        tags: ['#創作', '#世界観', '#こだわり', '#表現'],
+      },
+      healer: {
+        title: 'ヒーラー型 ♡',
+        body: 'そっと寄り添う優しさが強みのあなた。ASMR・雑談・お悩み相談で、リスナーの日常に安らぎを届けられるタイプ。SELFiAはメンタルサポートも手厚いので、あなた自身も無理なく続けられます。',
+        tags: ['#ASMR', '#癒し', '#安心', '#寄り添い'],
+      },
+    };
+
+    let answers = [];
+    let idx = 0;
+
+    const qNum = document.getElementById('qNum');
+    const qBar = document.getElementById('qBar');
+    const qText = document.getElementById('qText');
+    const qOptions = document.getElementById('qOptions');
+    const assessBack = document.getElementById('assessBack');
+
+    function renderQuestion() {
+      const q = questions[idx];
+      qNum.textContent = idx + 1;
+      qBar.style.width = ((idx + 1) / questions.length) * 100 + '%';
+      qText.textContent = q.q;
+      qOptions.innerHTML = '';
+      q.opts.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'assess-option';
+        btn.innerHTML = `<span class="opt-emoji">${opt.e}</span><span class="opt-text">${opt.t}</span><span class="opt-arrow"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M8.6 16.6L13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></span>`;
+        btn.addEventListener('click', () => {
+          answers[idx] = opt.tags;
+          if (idx < questions.length - 1) {
+            idx++;
+            renderQuestion();
+          } else {
+            showResult();
+          }
+        });
+        qOptions.appendChild(btn);
+      });
+      assessBack.disabled = idx === 0;
+      // スクロールを見出しへ
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    assessBack?.addEventListener('click', () => {
+      if (idx > 0) {
+        idx--;
+        renderQuestion();
+      }
+    });
+
+    function pickType() {
+      const score = { idol: 0, entertain: 0, creator: 0, healer: 0 };
+      answers.flat().forEach((tag) => {
+        if (tag === 'idol') score.idol += 3;
+        else if (tag === 'entertain') score.entertain += 3;
+        else if (tag === 'creator') score.creator += 3;
+        else if (tag === 'healer') score.healer += 3;
+        else if (tag === 'character' || tag === 'voice') score.entertain += 1;
+        else if (tag === 'world') score.creator += 2;
+        else if (tag === 'team' || tag === 'support') { score.idol += 1; score.healer += 1; }
+        else if (tag === 'pro') score.entertain += 1;
+        else if (tag === 'light') score.healer += 1;
+        else if (tag === 'curious' || tag === 'newbie') { score.idol += .5; score.healer += .5; }
+      });
+      let top = 'idol', max = -1;
+      Object.entries(score).forEach(([k, v]) => { if (v > max) { max = v; top = k; } });
+      return top;
+    }
+
+    function showResult() {
+      const type = pickType();
+      const t = types[type];
+      document.getElementById('resTitle').textContent = t.title;
+      document.getElementById('resBody').textContent = t.body;
+      const tagsEl = document.getElementById('resTags');
+      tagsEl.innerHTML = '';
+      t.tags.forEach((tag) => {
+        const s = document.createElement('span');
+        s.textContent = tag;
+        tagsEl.appendChild(s);
+      });
+      // スコアはランダム（78-96）で必ず高め
+      const score = 78 + Math.floor(Math.random() * 19);
+      const scoreEl = document.getElementById('resScore');
+      const arc = document.getElementById('scoreArc');
+      const circ = 2 * Math.PI * 52;
+      arc.setAttribute('stroke-dasharray', String(circ));
+      arc.setAttribute('stroke-dashoffset', String(circ));
+      // アニメーション
+      let n = 0;
+      const target = score;
+      const step = () => {
+        n = Math.min(target, n + 2);
+        scoreEl.textContent = n;
+        arc.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.7,.2,1)';
+        arc.setAttribute('stroke-dashoffset', String(circ - (circ * n) / 100));
+        if (n < target) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+
+      // シェア用URLを組み立てる
+      const share = document.getElementById('shareX');
+      const text = encodeURIComponent(`私のVライバータイプは【${t.title}】でした✦\n#SELFiA 適性診断`);
+      const url = encodeURIComponent(location.href.split('#')[0] + '#assess');
+      share.href = `https://x.com/intent/tweet?text=${text}&url=${url}`;
+
+      showPanel('result');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('assessStart')?.addEventListener('click', () => {
+      answers = [];
+      idx = 0;
+      renderQuestion();
+      showPanel('quiz');
+    });
+
+    document.getElementById('assessRetry')?.addEventListener('click', () => {
+      answers = [];
+      idx = 0;
+      showPanel('start');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAssess);
+  } else {
+    initAssess();
+  }
 })();

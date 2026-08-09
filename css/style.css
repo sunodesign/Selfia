@@ -595,6 +595,272 @@ button{ font: inherit; cursor:pointer; }
   font-size:15px;
 }
 
+/* ===== Vライバー適性診断 ===== */
+.section-assess{
+  padding: 80px 0;
+  position:relative;
+}
+.section-assess::before{
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(ellipse 60% 40% at 50% 20%, rgba(255,179,71,.15), transparent 60%);
+  pointer-events:none;
+  z-index:-1;
+}
+
+.assess-card{
+  position:relative;
+  max-width: 720px;
+  margin: 0 auto;
+  background:#fff;
+  border-radius: var(--r-lg);
+  padding: 44px 40px;
+  box-shadow: 0 24px 60px rgba(193,74,20,.15);
+  border:1px solid #FFE3CC;
+  overflow:hidden;
+}
+.assess-glow{
+  position:absolute;
+  top:-100px; right:-100px;
+  width:280px; height:280px; border-radius:50%;
+  background: radial-gradient(circle, rgba(255,179,71,.3), transparent 70%);
+  pointer-events:none;
+}
+.assess-panel{ display:none; }
+.assess-panel.is-active{ display:block; animation: assess-fade .5s ease-out; }
+@keyframes assess-fade {
+  from { opacity:0; transform: translateY(12px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* スタート画面 */
+.assess-badge{
+  display:inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #FFB347, #FF8A3D);
+  color:#fff;
+  font-family:"Quicksand", sans-serif;
+  font-weight:700; font-size:12px;
+  letter-spacing:1.5px;
+  box-shadow: 0 4px 12px rgba(255,138,61,.35);
+  margin-bottom: 20px;
+}
+.assess-lead{
+  font-family:"M PLUS Rounded 1c", sans-serif;
+  font-weight: 800;
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.5;
+  margin: 0 0 24px;
+  color: var(--ink);
+}
+.assess-points{
+  list-style:none; padding:0;
+  margin: 0 0 32px;
+  display:flex; flex-wrap:wrap; gap:12px;
+}
+.assess-points li{
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 8px 16px;
+  background: #FFF3E5;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+.assess-points span{
+  width:20px; height:20px; border-radius:50%;
+  background: var(--grad-main);
+  color:#fff; font-size:11px; font-weight:700;
+  display:grid; place-items:center;
+  flex-shrink:0;
+}
+.assess-start{ width: 100%; max-width: 320px; }
+
+/* 質問画面 */
+.assess-progress{ margin-bottom: 28px; }
+.assess-progress-head{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 10px;
+}
+.assess-step{
+  font-family:"Quicksand", sans-serif;
+  font-weight:700; font-size:15px;
+  color: var(--pink-500);
+}
+.assess-step em{ font-style:normal; color: var(--ink-mute); font-size:12px; }
+.assess-back{
+  display:inline-flex; align-items:center; gap:4px;
+  background:none; border:none;
+  color: var(--ink-mute); font-size:12px;
+  padding:6px 10px; border-radius:999px;
+  transition: color .2s ease, background .2s ease;
+}
+.assess-back:hover{ color: var(--pink-500); background: #FFF3E5; }
+.assess-back[disabled]{ opacity:.35; pointer-events:none; }
+.assess-bar{
+  height:8px; background: #FFE3CC;
+  border-radius:999px; overflow:hidden;
+}
+.assess-bar span{
+  display:block; height:100%;
+  background: linear-gradient(90deg, #FFB347, #E66822);
+  border-radius:999px;
+  transition: width .5s cubic-bezier(.2,.7,.2,1);
+  box-shadow: 0 0 12px rgba(255,179,71,.5);
+}
+.assess-q{
+  font-family:"M PLUS Rounded 1c", sans-serif;
+  font-weight: 800;
+  font-size: clamp(18px, 2.6vw, 22px);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+.assess-options{
+  display: grid;
+  gap: 12px;
+}
+.assess-option{
+  display:flex; align-items:center; gap:14px;
+  padding: 16px 20px;
+  background: #FFFAF3;
+  border: 2px solid #FFE3CC;
+  border-radius: 16px;
+  text-align:left;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor:pointer;
+  transition: all .2s ease;
+  width: 100%;
+}
+.assess-option:hover{
+  background:#fff;
+  border-color: var(--pink-300);
+  transform: translateX(4px);
+  box-shadow: 0 6px 18px rgba(255,138,61,.15);
+}
+.assess-option .opt-emoji{
+  font-size: 24px;
+  flex-shrink:0;
+}
+.assess-option .opt-arrow{
+  margin-left:auto;
+  color: var(--pink-400);
+  opacity: 0;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.assess-option:hover .opt-arrow{ opacity:1; transform: translateX(4px); }
+
+/* 結果画面 */
+.assess-result{ text-align:center; }
+.assess-result-tag{
+  display:inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #FFB347, #FF8A3D);
+  color:#fff;
+  font-family:"Quicksand", sans-serif;
+  font-weight:700; font-size:12px;
+  letter-spacing:2px;
+  margin-bottom: 16px;
+}
+.assess-result-lead{
+  margin: 0 0 8px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+.assess-result-title{
+  font-family:"M PLUS Rounded 1c", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  margin: 0 0 24px;
+  background: var(--grad-main);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.assess-score-ring{
+  position:relative;
+  width: 160px; height: 160px;
+  margin: 0 auto 24px;
+}
+.assess-score-ring svg{ width:100%; height:100%; }
+.assess-score-text{
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  flex-direction: column;
+}
+.assess-score-text strong{
+  display:block;
+  font-family:"Quicksand", sans-serif;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 1;
+  background: var(--grad-main);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.assess-score-text small{
+  display:block;
+  font-size: 11px;
+  color: var(--ink-mute);
+  line-height: 1.3;
+  text-align: center;
+}
+.assess-result-body{
+  max-width: 480px;
+  margin: 0 auto 20px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.8;
+  text-align: left;
+  padding: 20px 24px;
+  background: #FFF3E5;
+  border-radius: 14px;
+}
+.assess-result-tags{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:8px;
+  margin-bottom: 28px;
+}
+.assess-result-tags span{
+  padding: 5px 12px;
+  border-radius: 999px;
+  background:#fff;
+  border:1.5px solid var(--pink-300);
+  color: var(--pink-500);
+  font-size:12px;
+  font-weight:600;
+}
+.assess-result-actions{
+  display:flex; flex-direction:column; gap:10px; align-items:center;
+  margin-bottom: 20px;
+}
+.assess-result-actions .btn{ width:100%; max-width: 320px; }
+.assess-share{
+  font-size: 12px;
+  color: var(--ink-mute);
+  margin: 0;
+  display:inline-flex; align-items:center; gap:10px;
+  justify-content:center;
+}
+.assess-share a{
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  transition: opacity .2s ease;
+}
+.assess-share a:hover{ opacity: .85; }
+
+@media (max-width: 720px){
+  .section-assess{ padding: 60px 0; }
+  .assess-card{ padding: 28px 20px; border-radius: 24px; }
+  .assess-lead{ font-size: 18px; }
+  .assess-option{ padding: 14px 16px; font-size: 14px; }
+  .assess-result-body{ padding: 16px 18px; font-size: 13px; }
+}
+
 /* ===== About ===== */
 .feature-grid{
   display:grid;

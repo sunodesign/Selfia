@@ -349,6 +349,100 @@
     </div>
   </section>
 
+  <!-- Vライバー適性診断 -->
+  <section class="section section-assess" id="assess">
+    <div class="container">
+      <header class="section-head">
+        <span class="section-tag">Vライバー適性診断</span>
+        <h2 class="section-title">3分でわかる <span class="gradient-text">「わたしのVライバータイプ」</span></h2>
+        <p class="section-lead">
+          「Vライバーってちょっと難しそう…」<br />
+          大丈夫、まずは診断からはじめよう。<br class="pc-only" />
+          全部答えると<strong>あなたにぴったりのタイプ</strong>がわかります✦
+        </p>
+      </header>
+
+      <div class="assess-card" id="assessCard">
+        <div class="assess-glow" aria-hidden="true"></div>
+
+        <!-- スタート画面 -->
+        <div class="assess-panel is-active" data-panel="start">
+          <span class="assess-badge">✦ 5問・約3分</span>
+          <h3 class="assess-lead">あなたの<span class="gradient-text">「好き」</span>から、<br />ぴったりのVライバー像を見つけよう。</h3>
+          <ul class="assess-points">
+            <li><span>✓</span>質問はぜんぶ選ぶだけ</li>
+            <li><span>✓</span>個人情報は一切不要</li>
+            <li><span>✓</span>結果はその場で表示</li>
+          </ul>
+          <button type="button" class="btn btn-primary btn-lg assess-start" id="assessStart">
+            診断をはじめる
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M5 12h12l-4-4 1.4-1.4L20.8 12l-6.4 5.4L13 16l4-4H5z"/></svg>
+          </button>
+        </div>
+
+        <!-- 質問画面 -->
+        <div class="assess-panel" data-panel="quiz">
+          <div class="assess-progress">
+            <div class="assess-progress-head">
+              <span class="assess-step">Q<span id="qNum">1</span> <em>/ 5</em></span>
+              <button type="button" class="assess-back" id="assessBack" aria-label="前の質問へ">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M15.4 7.4L14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg>
+                戻る
+              </button>
+            </div>
+            <div class="assess-bar"><span id="qBar" style="width:20%"></span></div>
+          </div>
+
+          <h3 class="assess-q" id="qText">質問</h3>
+          <div class="assess-options" id="qOptions"><!-- JSで描画 --></div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div class="assess-panel" data-panel="result">
+          <div class="assess-result">
+            <span class="assess-result-tag">診断結果</span>
+            <p class="assess-result-lead">あなたのタイプは</p>
+            <h3 class="assess-result-title" id="resTitle">✦ 型 ✦</h3>
+            <div class="assess-score-ring" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#FFE3CC" stroke-width="10"/>
+                <circle id="scoreArc" cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)"/>
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#FFB347"/>
+                    <stop offset="100%" stop-color="#E66822"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="assess-score-text">
+                <strong id="resScore">85</strong>
+                <small>%<br />適性</small>
+              </div>
+            </div>
+            <p class="assess-result-body" id="resBody">
+              説明文
+            </p>
+            <div class="assess-result-tags" id="resTags"></div>
+            <div class="assess-result-actions">
+              <a href="#recruit" class="btn btn-primary btn-lg">
+                このままオーディションへ
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M5 12h12l-4-4 1.4-1.4L20.8 12l-6.4 5.4L13 16l4-4H5z"/></svg>
+              </a>
+              <button type="button" class="btn btn-ghost" id="assessRetry">もう一度診断する</button>
+            </div>
+            <p class="assess-share">
+              <span>結果をシェア:</span>
+              <a id="shareX" href="#" target="_blank" rel="noopener" aria-label="Xで共有">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.56L22.5 22H15.9l-5.16-6.74L4.9 22H1.64l8-9.13L1.5 2h6.77l4.66 6.16L18.244 2z"/></svg>
+                Xで共有
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- About -->
   <section class="section section-about" id="about">
     <div class="container">
