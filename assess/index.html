@@ -170,17 +170,13 @@ footer{text-align:center;padding:40px 22px 50px;font-size:11.5px;color:var(--ink
 
 /* Site header (slim) */
 .site-hdr{position:sticky;top:0;z-index:50;background:rgba(255,253,251,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.sh-in{max-width:680px;margin:0 auto;padding:11px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.sh-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);flex:1;min-width:0}
-.sh-mark{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--paper-2)}
-.sh-mark svg{display:block}
-.sh-text{display:flex;flex-direction:column;line-height:1.15;min-width:0}
-.sh-name{font-family:var(--f-en);font-weight:700;font-size:16px;color:var(--ink);letter-spacing:.02em}
-.sh-sub{font-family:var(--f-en);font-size:9px;font-weight:600;letter-spacing:.18em;color:var(--ink-faint)}
+.sh-in{max-width:680px;margin:0 auto;padding:10px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sh-brand{display:flex;align-items:center;text-decoration:none;flex:none}
+.sh-brand img{display:block;height:32px;width:auto}
 .sh-home{flex:none;font-family:var(--f-jp);font-size:12.5px;font-weight:700;color:var(--ink-soft);text-decoration:none;padding:7px 14px;border-radius:100px;border:1px solid var(--line);background:#fff;transition:color .2s,border-color .2s,background .2s;white-space:nowrap}
 .sh-home:hover{color:var(--coral);border-color:var(--amber);background:var(--paper-2)}
 @media(max-width:400px){
-  .sh-sub{display:none}
+  .sh-brand img{height:28px}
   .sh-home{font-size:11.5px;padding:6px 11px}
 }
 
@@ -218,23 +214,8 @@ footer{text-align:center;padding:40px 22px 50px;font-size:11.5px;color:var(--ink
 
 <header class="site-hdr">
   <div class="sh-in">
-    <a href="../" class="sh-brand" aria-label="Selfia トップへ">
-      <span class="sh-mark" aria-hidden="true">
-        <svg viewBox="0 0 48 48" width="24" height="24">
-          <defs>
-            <linearGradient id="gradLogoAssess" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#F4623A"/>
-              <stop offset="100%" stop-color="#FFC12E"/>
-            </linearGradient>
-          </defs>
-          <path d="M24 4 L29 18 L44 20 L33 30 L36 44 L24 37 L12 44 L15 30 L4 20 L19 18 Z"
-                fill="url(#gradLogoAssess)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="sh-text">
-        <span class="sh-name">Selfia</span>
-        <span class="sh-sub">VLiver Agency</span>
-      </span>
+    <a href="../" class="sh-brand" aria-label="SELFiA トップへ">
+      <img src="data:image/webp;base64,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" alt="SELFiA">
     </a>
     <a href="../" class="sh-home">← トップへ戻る</a>
   </div>
