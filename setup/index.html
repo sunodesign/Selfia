@@ -81,7 +81,8 @@ img{display:block;max-width:100%;height:auto}
 .step-inner{display:grid;grid-template-columns:180px 1fr;gap:20px;padding:18px 22px 18px 18px;align-items:center}
 .step-img{border-radius:14px;overflow:hidden;background:var(--paper-2);aspect-ratio:9/19.5;display:grid;place-items:center;border:1px solid var(--line)}
 .step-img img{width:100%;height:100%;object-fit:cover}
-.step-img.noimg{aspect-ratio:9/19.5;color:var(--ink-faint);font-family:var(--f-en);font-size:11px;letter-spacing:.16em;font-weight:600;padding:8px;text-align:center}
+.step.no-img .step-inner{grid-template-columns:1fr;padding:20px 22px}
+.step.no-img .step-body{padding:0}
 .step-body{min-width:0}
 .step-num{display:inline-flex;align-items:center;justify-content:center;font-family:var(--f-en);font-weight:700;font-size:14px;color:#fff;background:var(--grad);width:34px;height:34px;border-radius:50%;margin-bottom:10px;letter-spacing:.02em}
 .step-title{font-weight:900;font-size:16.5px;line-height:1.5;margin-bottom:8px}
@@ -117,7 +118,11 @@ footer{text-align:center;padding:36px 22px 46px;font-size:11.5px;color:var(--ink
   .steps{grid-template-columns:repeat(4,1fr);gap:16px}
   .step-inner{grid-template-columns:1fr;gap:0;padding:0;align-items:stretch}
   .step-img{border-radius:0;border:0;border-bottom:1px solid var(--line);background:var(--paper-2)}
-  .step-img.noimg{aspect-ratio:9/19.5}
+  .step.no-img{grid-column:1 / -1}
+  .step.no-img .step-inner{grid-template-columns:1fr;padding:18px 22px}
+  .step.no-img .step-body{padding:0}
+  .step.no-img .step-title{font-size:15.5px}
+  .step.no-img .step-desc{font-size:13px}
   .step-body{padding:16px 16px 20px}
   .step-num{width:30px;height:30px;font-size:13px;margin-bottom:8px}
   .step-title{font-size:14.5px;line-height:1.45;margin-bottom:6px}
@@ -272,8 +277,8 @@ const LINK_STEPS = [
   {n:"2", img:"link_1", title:"マイページ → 歯車マークをタップ", desc:"下部タブの「マイページ」を開き、右上の歯車マーク（設定）をタップします。"},
   {n:"3", img:"link_2", title:"「外部アカウント連携」をタップ", desc:"設定画面の「外部アカウント連携」を選択します。"},
   {n:"4", img:"link_3", title:"「X」→ ON", desc:"外部アカウント連携の一覧から「X」のトグルをタップして ON にします。"},
-  {n:"5", img:null, title:"連携を承認", desc:"表示される認証画面で連携を許可します。<b>これで IRIAM から X に飛べる</b>ようになります。"},
-  {n:"6", img:null, title:"X アプリを起動", desc:"連携ができたら X アプリを起動します。"},
+  {n:"5", img:"x_5", title:"ログインまたは連携アプリを認証", desc:"表示される画面でログインまたは連携アプリを認証します。<b>別アカウントでログインする場合</b>はこの画面から進めます。"},
+  {n:"6", img:"x_5", title:"X アプリを起動", desc:"連携ができたら X アプリを起動します。"},
   {n:"7", img:"link_1", title:"プロフィールに IRIAM リンクを記載", desc:"X のプロフィール編集画面で、IRIAM のプロフィールリンクを記載します。<br><b>リンクの取得方法：</b>IRIAM → マイページ → 右上の「↑」（共有ボタン）→ 「プロフィールリンクをコピー」をタップ。"}
 ];
 
@@ -283,10 +288,11 @@ function renderSteps(target, list){
     if(s.section){
       out += '<div class="subhead">' + s.section + '</div>';
     }
+    const noImg = !s.img;
     const imgBlock = s.img
       ? '<div class="step-img"><img src="' + IMG[s.img] + '" alt="ステップ' + s.n + '"></div>'
-      : '<div class="step-img noimg">画像なし</div>';
-    out += '<article class="step">' +
+      : '';
+    out += '<article class="step' + (noImg ? ' no-img' : '') + '">' +
       '<div class="step-inner">' +
         imgBlock +
         '<div class="step-body">' +
